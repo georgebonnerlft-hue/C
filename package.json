@@ -17,5 +17,10 @@
     "charts",
     "components"
   ],
-  "skills": ["./.claude/skills/ui-ux-pro-max"]
+  "skills": [
+    "./.claude/skills/ui-ux-pro-max"
+  ],
+  "dependencies": {
+    "framer-motion": "^12.38.0"
+  }
 }
