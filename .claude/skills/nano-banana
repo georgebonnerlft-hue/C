@@ -254,6 +254,84 @@ Environment variable: `GEMINI_API_KEY=your-key-here`
 
 ---
 
+## HTML / WEBSITE INTEGRATION
+
+When generating images for use in HTML, websites, or web apps, automatically apply web-optimized settings and emit ready-to-use markup.
+
+### Auto-applied web defaults
+| Context | Flags applied |
+|---------|--------------|
+| Hero / banner | `--ar 16:9 --size 2048 --format webp` |
+| Open Graph / social card | `--ar 1.91:1 --size 1200 --format jpg` |
+| Avatar / profile pic | `--ar 1:1 --size 512 --format webp --transparent` |
+| Product card thumbnail | `--ar 4:3 --size 800 --format webp` |
+| Blog cover | `--ar 16:9 --size 1600 --format webp` |
+| Favicon / app icon | `--ar 1:1 --size 512 --format png --transparent` |
+| Background texture | `--ar 1:1 --size 1024 --format webp` |
+| Mobile splash | `--ar 9:16 --size 1080 --format webp` |
+
+### Emit HTML snippet automatically
+After generating for a web context, output a ready-to-paste HTML snippet:
+
+```html
+<!-- Hero image -->
+<img
+  src="./generated/nb-20260331-142233.webp"
+  alt="[descriptive alt text from the prompt]"
+  width="2048"
+  height="1152"
+  loading="lazy"
+  decoding="async"
+/>
+```
+
+For transparent PNGs on a page:
+```html
+<img src="./generated/nb-logo.png" alt="Logo" width="512" height="512" />
+```
+
+CSS background usage:
+```css
+.hero {
+  background-image: url('./generated/nb-hero.webp');
+  background-size: cover;
+  background-position: center;
+}
+```
+
+With `<picture>` for responsive delivery:
+```html
+<picture>
+  <source srcset="./generated/nb-hero.avif" type="image/avif" />
+  <source srcset="./generated/nb-hero.webp" type="image/webp" />
+  <img src="./generated/nb-hero.jpg" alt="..." width="2048" height="1152" loading="lazy" />
+</picture>
+```
+
+### Next.js / React
+```jsx
+import Image from 'next/image'
+import heroImg from './generated/nb-hero.webp'
+
+<Image src={heroImg} alt="..." priority placeholder="blur" />
+```
+
+### CSS `content` / pseudo-element backgrounds
+```css
+.card::before {
+  content: '';
+  background-image: url('./generated/nb-texture.webp');
+  background-size: cover;
+}
+```
+
+### Tailwind utility class
+```html
+<div class="bg-[url('./generated/nb-bg.webp')] bg-cover bg-center"></div>
+```
+
+---
+
 ## BEHAVIOR RULES
 
 1. **Always confirm before batch jobs** of 10+ images — show estimated cost first.
@@ -266,3 +344,5 @@ Environment variable: `GEMINI_API_KEY=your-key-here`
 8. **Suggest negative prompts** proactively for common quality issues.
 9. **Echo the resolved command** before executing so the user can verify flags.
 10. **For pixel art**, default to `--size 512` (upscale with nearest-neighbor externally).
+11. **For HTML/website work**, auto-detect context (hero, card, avatar, etc.) and apply web defaults from the table above — then emit a ready-to-paste HTML/CSS/JSX snippet alongside the generation command.
+12. **Always include `alt` text** in emitted HTML, derived from the generation prompt.
